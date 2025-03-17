@@ -1,0 +1,26 @@
+name: Manage Organization Members
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - org-membership/members.json
+
+permissions: read-all
+
+jobs:
+  load-members:
+    runs-on: ubuntu-latest
+    outputs:
+      members: ${{ steps.parse-members.outputs.members }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Read Members File
+        id: parse-members
+        run: |
+          members_json=$(jq -c '.members' org-membership/members.json)
+          echo "members=$members_json" >> "$GITHUB_ENV"

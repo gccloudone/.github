@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - org-membership/members.json
+      - policies/org-membership/members.json
 
 permissions: read-all
 
@@ -22,5 +22,5 @@ jobs:
       - name: Read Members File
         id: parse-members
         run: |
-          members_json=$(jq -c '.members' org-membership/members.json)
+          members_json=$(jq -c '.members' policies/org-membership/members.json)
           echo "members=$members_json" >> "$GITHUB_ENV"

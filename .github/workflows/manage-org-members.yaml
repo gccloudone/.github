@@ -1,6 +1,8 @@
 name: Manage Organization Members
 
 on:
+  schedule:
+    - cron: "0 0 * * *"
   workflow_dispatch:
   push:
     branches:
@@ -11,16 +13,53 @@ on:
 permissions: read-all
 
 jobs:
-  load-members:
+  manage-members:
     runs-on: ubuntu-latest
-    outputs:
-      members: ${{ steps.parse-members.outputs.members }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
 
-      - name: Read Members File
-        id: parse-members
+    steps:
+      - name: Create App token
+        id: create_token
+        uses: gccloudone/.github/.github/actions/create-app-token@main
+        with:
+          app-id: ${{ vars.GCCO_ADMIN_APP_ID }}
+          private-key: ${{ secrets.GCCO_ADMIN_APP_KEY }}
+
+      - name: Checkout Repository
+        uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2
+
+      - name: Clear Failed Invitations
         run: |
-          members_json=$(jq -c '.members' policies/org-membership/members.json)
-          echo "members=$members_json" >> "$GITHUB_ENV"
+          # Fetch failed invitations
+          failed_invitations=$(curl -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ steps.create_token.outputs.token }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/orgs/${{ github.repository_owner }}/failed_invitations")
+
+          # Parse and cancel each failed invitation
+          echo "$failed_invitations" | jq -c '.[]' | while read -r invite; do
+            invite_id=$(echo "$invite" | jq -r '.id')
+            email=$(echo "$invite" | jq -r '.email')
+            failed_reason=$(echo "$invite" | jq -r '.failed_reason')
+
+            if [[ -n "$failed_reason" ]]; then
+              echo "Invitation for $email failed due to: $failed_reason"
+            else
+              echo "Invitation for $email failed, but no reason provided."
+            fi
+
+            cancel_response=$(curl -L -X DELETE \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ steps.create_token.outputs.token }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/orgs/${{ github.repository_owner }}/invitations/$invite_id" \
+              -w "%{http_code}" -s)
+
+            http_code=$(echo "$cancel_response" | tail -n1)
+
+            if [[ "$http_code" == "204" ]]; then
+              echo "Successfully cancelled invitation for $email with ID $invite_id."
+            else
+              echo "Failed to cancel invitation for $email with ID $invite_id. Response: $cancel_response"
+            fi
+          done

@@ -1,10 +1,10 @@
 # GC Cloud One
 
-Welcome to the **GC Cloud One** GitHub organization.  
+Welcome to the **GC Cloud One** GitHub organization.
 
 ## General
 
-- **[gccloudone](https://github.com/gccloudone)**: Central hub for documentation, repositories, and infrastructure supporting cloud initiatives across the Government of Canada.  
+- **[gccloudone](https://github.com/gccloudone)**: Central hub for documentation, repositories, and infrastructure supporting cloud initiatives across the Government of Canada.
 
 ## Aurora
 

@@ -1,8 +1,11 @@
 {
   "members": [
     {
+      "username": "sylus",
       "email": "william.hearn@ssc-spc.gc.ca",
-      "role": "direct_member"
+      "role": "direct_member",
+      "status": "active",
+      "removable": "yes"
     }
   ]
 }

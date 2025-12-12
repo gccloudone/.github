@@ -41,7 +41,10 @@ jobs:
 
           # Retrieve existing rulesets
           echo "Getting existing organization rulesets..."
+          
           existing_ruleset_ids=$(gh api /orgs/"$org"/rulesets --jq '.[].id')
+
+          echo $existing_ruleset_ids
 
           mapfile -t ruleset_ids <<< "$existing_ruleset_ids"
 

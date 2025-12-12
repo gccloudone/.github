@@ -46,7 +46,7 @@ jobs:
 
           mapfile -t ruleset_ids <<< "$existing_ruleset_ids"
 
-          # Delete existing rulesets    
+          # Delete existing rulesets
           if [ "${#ruleset_ids[@]}" -gt 0 ]; then
             for id in "${ruleset_ids[@]}"; do
               [ -z "$id" ] && continue

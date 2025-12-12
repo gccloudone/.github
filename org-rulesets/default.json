@@ -5,8 +5,12 @@
   "enforcement": "active",
   "conditions": {
     "ref_name": {
-      "exclude": [],
-      "include": ["~DEFAULT_BRANCH"]
+      "include": ["main"],
+      "exclude": []
+    },
+    "repository_name": {
+      "include": ["*"],
+      "exclude": []
     }
   },
   "rules": [

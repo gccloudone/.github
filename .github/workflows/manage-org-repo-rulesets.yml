@@ -27,7 +27,9 @@ jobs:
 
       - name: Authenticate GitHub CLI
         run: |
-          gh auth login --with-token <<< "${{ steps.create_token.outputs.token }}"
+          # gh auth login --with-token <<< "${{ steps.create_token.outputs.token }}"
+          echo "${{ steps.create_token.outputs.token }}" | gh auth login --with-token
+          gh repo list gccloudone --limit 5
           gh api /app/installations --jq '.[].id'
 
       - name: Configure organization repository ruleset

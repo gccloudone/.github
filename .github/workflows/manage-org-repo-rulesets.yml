@@ -28,6 +28,7 @@ jobs:
       - name: Authenticate GitHub CLI
         run: |
           gh auth login --with-token <<< "${{ steps.create_token.outputs.token }}"
+          gh api -i user
 
       - name: Configure organization repository ruleset
         env:

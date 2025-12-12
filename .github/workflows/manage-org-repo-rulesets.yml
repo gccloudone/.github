@@ -56,6 +56,7 @@ jobs:
           # Delete existing rulesets
           if [ "${#ruleset_ids[@]}" -gt 0 ]; then
             for id in "${ruleset_ids[@]}"; do
+              [ -z "$id" ] && continue
               echo "  -> Deleting ruleset ID $id"
               gh api /orgs/"$org"/rulesets/"$id" --method DELETE \
                 -H "Accept: application/vnd.github+json" \

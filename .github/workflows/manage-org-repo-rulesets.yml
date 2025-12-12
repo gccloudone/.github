@@ -48,6 +48,9 @@ jobs:
 
           mapfile -t ruleset_ids <<< "$existing_ruleset_ids"
 
+          echo "size of array: ${#ruleset_ids[@]}"
+
+
           # Delete existing rulesets
           if [ "${#ruleset_ids[@]}" -gt 0 ]; then
             for id in "${ruleset_ids[@]}"; do
